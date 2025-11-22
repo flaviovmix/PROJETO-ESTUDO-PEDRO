@@ -40,58 +40,55 @@
     </head>
     <body>
 
-        <h2>PROJETO-ESTUDO - Lista de Tarefas</h2>
+    <h2>PROJETO-ESTUDO - PoolConexoes</h2>
 
-        <%
-            String url = "jdbc:postgresql://localhost:5432/PROJETO-ESTUDO-PEDRO";
-            String user = "postgres";
-            String pass = "masterkey";
+    <%
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
-            Connection con = null;
-            PreparedStatement ps = null;
-            ResultSet rs = null;
+        try {
 
-            try {
-                Class.forName("org.postgresql.Driver");
-                con = DriverManager.getConnection(url, user, pass);
+            javax.naming.Context initCtx = new javax.naming.InitialContext();
+            javax.sql.DataSource ds = (javax.sql.DataSource) initCtx.lookup("java:comp/env/jdbc/PoolConexoes");
 
-                String sql = "SELECT * FROM tarefas";
-                ps = con.prepareStatement(sql);
-                rs = ps.executeQuery();
-        %>
+            con = ds.getConnection(); 
 
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Título</th>
-                <th>Prioridade</th>
-                <th>Responsável</th>
-                <th>Status</th>
-            </tr>
+            String sql = "SELECT * FROM tarefas";
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+    %>
 
-            <% while (rs.next()) { %>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Prioridade</th>
+            <th>Responsável</th>
+            <th>Status</th>
+        </tr>
 
-                <tr style="border-bottom: 1px solid black;">
-                   <td><%= rs.getInt("id_tarefa") %></td>
-                   <td><%= rs.getString("titulo") %></td>
-                   <td><%= rs.getString("prioridade") %></td>
-                   <td><%= rs.getString("responsavel") %></td>
-                   <td><%= rs.getInt("status") %></td>
-               </tr>
+        <% while (rs.next()) { %>
+            <tr style="border-bottom: 1px solid black;">
+               <td><%= rs.getInt("id_tarefa") %></td>
+               <td><%= rs.getString("titulo") %></td>
+               <td><%= rs.getString("prioridade") %></td>
+               <td><%= rs.getString("responsavel") %></td>
+               <td><%= rs.getInt("status") %></td>
+           </tr>
+        <% } %>
 
-            <% } %>
+    </table>
 
-        </table>
-
-        <%
-            } catch (Exception e) {
-                out.println("Erro: " + e.getMessage());
-            } finally {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (con != null) con.close();
-            }
-        %>
+    <%
+        } catch (Exception e) {
+            out.println("Erro: " + e.getMessage());
+        } finally {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (con != null) con.close(); 
+        }
+    %>
 
     </body>
 </html>
