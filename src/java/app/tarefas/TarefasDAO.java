@@ -51,5 +51,15 @@ public class TarefasDAO {
             return lista;
 
         }
-    
+
+        public void excluirTarefa(Integer id) {
+            String sql = "DELETE FROM tarefas WHERE id_tarefa = ?";
+
+            try (PreparedStatement ps = con.getConexao().prepareStatement(sql)) {
+                ps.setInt(1, id);
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 }

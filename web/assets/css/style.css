@@ -32,3 +32,12 @@ th {
     text-align: center;
     vertical-align: middle;
 }
+
+.link-icon {
+    color: inherit;
+    text-decoration: none;
+}
+
+.link-icon:hover {
+    color: red;
+}

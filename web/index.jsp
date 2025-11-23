@@ -39,7 +39,14 @@
                     <td><%= tarefa.getResponsavel() %></td>
                     <td class="text-center"><%= tarefa.getStatus() %></td>
                     <td class="text-center"><i class="fa-solid fa-pen"></i></td>
-                    <td class="text-center"><i class="fa-solid fa-trash"></i></td>
+                    
+                    <td class="text-center">
+                        <a href="excluirTarefa.jsp?id=<%= tarefa.getId_tarefa() %>" 
+                            class="link-icon">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    </td>
+
                 </tr>
             <% } 
         %>
