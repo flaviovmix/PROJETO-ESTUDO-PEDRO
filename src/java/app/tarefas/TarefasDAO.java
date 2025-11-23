@@ -15,7 +15,33 @@ public class TarefasDAO {
         con = new PoolConexoes();
         con.getConexao();
     }
+    
+public void adicionarTarefa(TarefasBean bean) throws SQLException {
+    StringBuilder sql = new StringBuilder();
 
+    sql.append("INSERT INTO tarefas (")
+       .append("titulo, prioridade, responsavel, data_criacao, data_conclusao, status, descricao")
+       .append(") VALUES (")
+       .append("?, ?, ?, ?, ?, ?, ?")
+       .append(")");
+
+    try (PreparedStatement ps = con.getConexao().prepareStatement(sql.toString())) {
+
+        ps.setString(1, bean.getTitulo());
+        ps.setString(2, bean.getPrioridade());
+        ps.setString(3, bean.getResponsavel());
+        ps.setDate(4, bean.getData_criacao());
+        ps.setDate(5, bean.getData_conclusao());
+        ps.setInt(6, bean.getStatus());
+        ps.setString(7, bean.getDescricao());
+
+        ps.executeUpdate();  // 🔥 CORRETO para INSERT
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
+    
     public List<TarefasBean> listarTarefas() {
         List<TarefasBean> lista = new ArrayList<>();
 

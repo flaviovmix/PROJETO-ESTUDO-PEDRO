@@ -8,50 +8,138 @@
     <head>
         <meta charset="UTF-8">
         <title>Lista de Tarefas</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="./assets/css/style.css">
+        <link rel="stylesheet" href="./assets/css/modalTarefa.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     </head>
     
     <body>
 
-    <h2>PROJETO-ESTUDO - PoolConexoes</h2>
+        <header>
+            <div class="topo-sistema">
+            <button type="button" class="btn-abrir-Tarefas" onclick="openModalTarefas()">
+                Nova Tarefa
+            </button>
+            <h2>PROJETO-ESTUDO - PoolConexoes</h2>
+            </div>
+        </header>
 
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Título</th>
-            <th>Prioridade</th>
-            <th>Responsável</th>
-            <th>Status</th>
-            <th>Editar</th>
-            <th>Excluir</th>
-        </tr>
+
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Prioridade</th>
+                <th>Responsável</th>
+                <th>Status</th>
+                <th>Editar</th>
+                <th>Excluir</th>
+            </tr>
+
+            <% 
+                TarefasDAO dao = new TarefasDAO();
+                List<TarefasBean> tarefas = dao.listarTarefas();
+
+                for (TarefasBean tarefa : tarefas) { %>
+                    <tr>
+                        <td><%= tarefa.getId_tarefa() %></td>
+                        <td><%= tarefa.getTitulo() %></td>
+                        <td><%= tarefa.getPrioridade() %></td>
+                        <td><%= tarefa.getResponsavel() %></td>
+                        <td class="text-center"><%= tarefa.getStatus() %></td>
+                        <td class="text-center"><i class="fa-solid fa-pen"></i></td>
+
+                        <td class="text-center">
+                            <a href="excluirTarefa.jsp?id=<%= tarefa.getId_tarefa() %>" 
+                                class="link-icon">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                <% } 
+            %>
+
+        </table>
         
-        <% 
-            TarefasDAO dao = new TarefasDAO();
-            List<TarefasBean> tarefas = dao.listarTarefas();
-            
-            for (TarefasBean tarefa : tarefas) { %>
-                <tr style="border-bottom: 1px solid black;">
-                    <td><%= tarefa.getId_tarefa() %></td>
-                    <td><%= tarefa.getTitulo() %></td>
-                    <td><%= tarefa.getPrioridade() %></td>
-                    <td><%= tarefa.getResponsavel() %></td>
-                    <td class="text-center"><%= tarefa.getStatus() %></td>
-                    <td class="text-center"><i class="fa-solid fa-pen"></i></td>
-                    
-                    <td class="text-center">
-                        <a href="excluirTarefa.jsp?id=<%= tarefa.getId_tarefa() %>" 
-                            class="link-icon">
-                            <i class="fa-solid fa-trash"></i>
-                        </a>
-                    </td>
 
-                </tr>
-            <% } 
-        %>
+<div class='overlay-custom' id='modalTarefas' style='display:none;'>
+    <div class='box-modal-custom'>
 
-    </table>
+        <button type="button" class="btn-close-custom" onclick="closeModalTarefas()">×</button>
+        <h2>Nova Tarefa</h2>
 
+        <form action="salvarTarefa.jsp" method="post" class="form-tarefa-custom">
+
+            <div class="group-custom">
+                <label class="label-custom" for="titulo">Título</label>
+                <input type="text" id="titulo" name="titulo" required>
+            </div>
+
+            <div class="columns-2-custom">
+
+                <div class="group-custom">
+                    <label class="label-custom">Prioridade</label>
+
+                    <div class="radio-custom">
+
+                        <label class="label-custom">
+                            <input type="radio" name="prioridade" value="alta" required>
+                            Alta
+                        </label>
+
+                        <label class="label-custom">
+                            <input type="radio" name="prioridade" value="media">
+                            Média
+                        </label>
+
+                        <label class="label-custom">
+                            <input type="radio" name="prioridade" value="baixa">
+                            Baixa
+                        </label>
+
+                    </div>
+                </div>
+
+                <div class="group-custom">
+                    <label class="label-custom" for="responsavel">Responsável</label>
+                    <input type="text" id="responsavel" name="responsavel" required>
+                </div>
+
+            </div>
+
+            <div class="columns-2-custom">
+
+                <div class="group-custom">
+                    <label class="label-custom" for="data_criacao">Data de Criação</label>
+                    <input type="date" id="data_criacao" name="data_criacao" required>
+                </div>
+
+                <div class="group-custom">
+                    <label class="label-custom" for="status">Status</label>
+                    <select id="status" name="status" required>
+                        <option value="">Selecione</option>
+                        <option value="0">Pendente</option>
+                        <option value="1">Concluída</option>
+                        <option value="2">Rascunho</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="group-custom">
+                <label class="label-custom" for="descricao">Descrição</label>
+                <textarea id="descricao" name="descricao" rows="4"></textarea>
+            </div>
+
+            <button type="submit" class="btn-save-custom">Salvar Tarefa</button>
+
+        </form>
+
+    </div>
+</div>
+
+        
+        <script src="./assets/js/scripts.js"></script>
     </body>
 </html>
