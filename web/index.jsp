@@ -1,3 +1,6 @@
+<%@page import="app.tarefas.TarefasDAO"%>
+<%@page import="java.util.List"%>
+<%@page import="app.tarefas.TarefasBean"%>
 <%@page import="app.config.PoolConexoes"%>
 <%@ page import="java.sql.*" %>
 <!DOCTYPE html>
@@ -5,58 +8,13 @@
     <head>
         <meta charset="UTF-8">
         <title>Lista de Tarefas</title>
-        
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
-
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: #fafafa;
-            color: #222;
-        }
-        
-        h2 {
-            text-align: center; 
-        }
-        table {
-            border-collapse: collapse;
-            width: 900px;
-            margin: 0 auto; 
-        }
-
-        th, td {
-            border-bottom: 1px solid #ccc;
-            padding: 15px;
-        }
-
-        th {
-            border-bottom: 2px solid #000;
-            background: #f5f5f5;
-            text-align: left;
-        }
-    </style>
-
+        <link rel="stylesheet" href="./assets/css/style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     </head>
+    
     <body>
 
     <h2>PROJETO-ESTUDO - PoolConexoes</h2>
-
-    <%
-        PoolConexoes pool = new PoolConexoes();
-        
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        
-        try {
-            String sql = "SELECT * FROM tarefas";
-            
-            con = pool.getConexao();
-            ps = con.prepareStatement(sql);
-            rs = ps.executeQuery();
-    %>
 
     <table>
         <tr>
@@ -65,29 +23,28 @@
             <th>Prioridade</th>
             <th>Responsável</th>
             <th>Status</th>
+            <th>Editar</th>
+            <th>Excluir</th>
         </tr>
-
-        <% while (rs.next()) { %>
-            <tr style="border-bottom: 1px solid black;">
-               <td><%= rs.getInt("id_tarefa") %></td>
-               <td><%= rs.getString("titulo") %></td>
-               <td><%= rs.getString("prioridade") %></td>
-               <td><%= rs.getString("responsavel") %></td>
-               <td><%= rs.getInt("status") %></td>
-           </tr>
-        <% } %>
+        
+        <% 
+            TarefasDAO dao = new TarefasDAO();
+            List<TarefasBean> tarefas = dao.listarTarefas();
+            
+            for (TarefasBean tarefa : tarefas) { %>
+                <tr style="border-bottom: 1px solid black;">
+                    <td><%= tarefa.getId_tarefa() %></td>
+                    <td><%= tarefa.getTitulo() %></td>
+                    <td><%= tarefa.getPrioridade() %></td>
+                    <td><%= tarefa.getResponsavel() %></td>
+                    <td class="text-center"><%= tarefa.getStatus() %></td>
+                    <td class="text-center"><i class="fa-solid fa-pen"></i></td>
+                    <td class="text-center"><i class="fa-solid fa-trash"></i></td>
+                </tr>
+            <% } 
+        %>
 
     </table>
-
-    <%
-        } catch (Exception e) {
-            out.println("Erro: " + e.getMessage());
-        } finally {
-            if (rs != null) rs.close();
-            if (ps != null) ps.close();
-            pool.closeConexao();
-        }
-    %>
 
     </body>
 </html>

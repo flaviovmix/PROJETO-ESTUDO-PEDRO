@@ -1,0 +1,55 @@
+package app.tarefas;
+
+import app.config.PoolConexoes;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class TarefasDAO {
+    
+    private PoolConexoes con;
+
+    public TarefasDAO() {
+        con = new PoolConexoes();
+        con.getConexao();
+    }
+
+    public List<TarefasBean> listarTarefas() {
+        List<TarefasBean> lista = new ArrayList<>();
+
+            StringBuilder sql = new StringBuilder();
+
+            sql.append("SELECT * FROM tarefas");  
+
+            try (PreparedStatement ps = con.getConexao().prepareStatement(sql.toString())) {
+
+                try (ResultSet rs = ps.executeQuery()) {
+
+                    while (rs.next()) {
+
+                        TarefasBean tarefa = new TarefasBean();
+
+                        tarefa.setId_tarefa(rs.getInt("id_tarefa"));
+                        tarefa.setTitulo(rs.getString("titulo"));
+                        tarefa.setPrioridade(rs.getString("prioridade"));
+                        tarefa.setResponsavel(rs.getString("responsavel"));
+                        tarefa.setData_criacao(rs.getDate("data_criacao"));
+                        tarefa.setData_conclusao(rs.getDate("data_conclusao"));
+                        tarefa.setStatus(rs.getInt("status"));
+                        tarefa.setDescricao(rs.getString("descricao"));
+
+                        lista.add(tarefa);
+
+                    }
+                }
+            } catch (SQLException erro) {
+                erro.printStackTrace();
+            }
+
+            return lista;
+
+        }
+    
+}
